@@ -2,10 +2,10 @@ import express, {Request, Response} from 'express';
 import cors from 'cors';
 import mongoose, { Schema } from 'mongoose';
 
-const app = express();
+const index = express();
 
-app.use(cors());
-app.use(express.json());
+index.use(cors());
+index.use(express.json());
 
 const dbUrl = 'mongodb+srv://armankhanikiryan:93285797a@node-vercel-cluster.cpc5cyl.mongodb.net/';
 
@@ -21,7 +21,7 @@ const userSchema = new Schema({
 
 const UserModel= mongoose.model('User', userSchema);
 
-app.get('/', async (req, res) => {
+index.get('/', async (req, res) => {
     try {
         const users = await UserModel.find();
         res.status(200).json(users);
@@ -30,7 +30,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.post('/post', async (req, res) => {
+index.post('/post', async (req, res) => {
     const { name, age } = req.body;
     try {
         const newUser = await UserModel.create({ name, age });
@@ -40,7 +40,7 @@ app.post('/post', async (req, res) => {
     }
 });
 
-app.delete('/delete/:id', async (req, res) => {
+index.delete('/delete/:id', async (req, res) => {
     const id = req.params.id;
     try {
         await UserModel.deleteOne({ _id: id });
@@ -52,6 +52,6 @@ app.delete('/delete/:id', async (req, res) => {
 
 const PORT = 1234;
 
-app.listen(PORT, () => {
+index.listen(PORT, () => {
     console.log(`Server is up and working on port ${PORT}`);
 });
