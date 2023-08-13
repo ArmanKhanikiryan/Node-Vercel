@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import cors from 'cors';
 import mongoose, { Schema } from 'mongoose';
 
@@ -19,9 +19,9 @@ const userSchema = new Schema({
 });
 
 
-const UserModel = mongoose.model('User', userSchema);
+const UserModel= mongoose.model('User', userSchema);
 
-app.get('/', async (req, res) => {
+app.get('/', async (req:Request, res:Response) => {
     try {
         const users = await UserModel.find();
         res.status(200).json(users);
@@ -30,7 +30,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.post('/post', async (req, res) => {
+app.post('/post', async (req:Request, res:Response) => {
     const { name, age } = req.body;
     try {
         const newUser = await UserModel.create({ name, age });
@@ -40,7 +40,7 @@ app.post('/post', async (req, res) => {
     }
 });
 
-app.delete('/delete/:id', async (req, res) => {
+app.delete('/delete/:id', async (req:Request, res:Response) => {
     const id = req.params.id;
     try {
         await UserModel.deleteOne({ _id: id });
