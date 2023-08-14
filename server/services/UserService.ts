@@ -1,10 +1,11 @@
 import CustomError from "../error/Error";
 require('dotenv').config()
 import UserModel from "../models/UserModel";
-import {IUser} from "../utils/types/types";
+import {IUser, IUserServices} from "../utils/types/types";
 import CryptoJS from 'crypto-js'
-export class UserServices{
-    public async getUsers() {
+import {Document} from "mongoose";
+export class UserServices implements IUserServices{
+    public async getUsers():Promise<Document> {
         try {
             return await UserModel.find();
         }catch (e) {

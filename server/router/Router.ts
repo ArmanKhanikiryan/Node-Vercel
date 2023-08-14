@@ -8,6 +8,10 @@ router.get('/', userController.getUsers.bind(userController));
 
 router.post('/post', userController.createUser.bind(userController));
 
+router.post('/register', userController.createUser.bind(userController));
+
+router.post('/post', userController.createUser.bind(userController));
+
 router.delete('/delete/:id', userController.deleteUser.bind(userController));
 
 

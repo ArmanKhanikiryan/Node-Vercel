@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import CustomError from "../error/Error";
 import {UserServices} from "../services/UserService";
+import {IUserController} from "../utils/types/types";
 
-export class UserController{
+export class UserController implements IUserController{
     private userService: UserServices
     constructor() {
         this.userService = new UserServices()
@@ -44,4 +45,18 @@ export class UserController{
             res.status(500).json({ errorMessage: 'Internal Server Error' });
         }
     }
+
+    public async register(req: Request, res: Response): Promise<void> {
+        try{
+            const { name, password } = req.body;
+            const data = await this.userService.createUser({ name, password })
+            res.status(201).json({ data, message: "User Created" });
+        }catch (e) {
+            if (e instanceof CustomError){
+                res.status(e.code).json({ errorMessage: e.message})
+            }
+            res.status(500).json({ errorMessage: 'Internal Server Error' });
+        }
+    }
+
 }
