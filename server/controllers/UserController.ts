@@ -36,7 +36,7 @@ export class UserController{
         try {
             const id = req.params.id;
             await this.userService.deleteUser(id)
-            res.status(205).json({ message: "User Deleted" });
+            res.status(201).json({ message: "User Deleted" });
         }catch (e) {
             if (e instanceof CustomError){
                 res.status(e.code).json({ errorMessage: e.message})

@@ -53,7 +53,7 @@ class UserController {
             try {
                 const id = req.params.id;
                 yield this.userService.deleteUser(id);
-                res.status(205).json({ message: "User Deleted" });
+                res.status(201).json({ message: "User Created" });
             }
             catch (e) {
                 if (e instanceof Error_1.default) {
