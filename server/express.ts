@@ -1,3 +1,4 @@
+require('dotenv').config();
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
@@ -6,7 +7,13 @@ export default async function server() {
 const app = express();
 app.use(cors());
 app.use(express.json());
-const dbUrl = 'mongodb+srv://armankhanikiryan:93285797a@node-vercel-cluster.cpc5cyl.mongodb.net/';
+const dbUrl = process.env.DBURL;
+
+    if (!dbUrl) {
+        console.error('Database environment variable is not defined');
+        process.exit(1);
+    }
+
 mongoose.connect(dbUrl)
     .then(() => console.log('Successfully connected to mongo'))
     .catch(err => console.log(err));
