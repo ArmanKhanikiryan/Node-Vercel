@@ -15,7 +15,11 @@ export class UserServices{
     public async createUser(data:IUser){
         const { password, name } = data
         try {
-            return await UserModel.create({ name, password: CryptoJS.HmacSHA256(password, "YARDAGES") });
+            if (!process.env.PASSWORD_SECRET){
+                console.log('Invalid .env credentials')
+                process.exit(1)
+            }
+            return await UserModel.create({ name, password: CryptoJS.AES.encrypt(password, process.env.PASSWORD_SECRET.toString())});
         }catch (e) {
             console.log('Error in creating user');
             throw new CustomError('Error In User Creation ', 504);
