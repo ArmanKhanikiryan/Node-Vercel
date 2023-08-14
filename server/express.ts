@@ -1,3 +1,4 @@
+import databaseConnect from "./database/database";
 require('dotenv').config();
 import express from 'express';
 import cors from 'cors';
@@ -7,16 +8,7 @@ export default async function server() {
 const app = express();
 app.use(cors());
 app.use(express.json());
-const dbUrl = process.env.DBURL;
-
-    if (!dbUrl) {
-        console.error('Database environment variable is not defined');
-        process.exit(1);
-    }
-
-mongoose.connect(dbUrl)
-    .then(() => console.log('Successfully connected to mongo'))
-    .catch(err => console.log(err));
+await databaseConnect()
 
 app.use('/',router)
 
