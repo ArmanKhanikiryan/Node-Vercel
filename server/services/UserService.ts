@@ -1,5 +1,6 @@
 import CustomError from "../error/Error";
 import UserModel from "../models/UserModel";
+import {IUser} from "../utils/types/types";
 
 export class UserServices{
     public async getUsers() {
@@ -10,7 +11,7 @@ export class UserServices{
             throw new CustomError('Error Getting Users', 503);
         }
     }
-    public async createUser(data:any){
+    public async createUser(data:IUser){
         const { age, name } = data
         try {
             return await UserModel.create({ name, age });

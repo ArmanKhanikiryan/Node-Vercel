@@ -22,7 +22,7 @@ function server() {
         const app = (0, express_1.default)();
         app.use((0, cors_1.default)());
         app.use(express_1.default.json());
-        yield (0, database_1.default)();
+        (0, database_1.default)();
         app.use('/', Router_1.default);
         const PORT = process.env.PORT || 1234;
         app.listen(PORT, () => {

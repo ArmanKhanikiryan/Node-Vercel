@@ -8,7 +8,7 @@ export default async function server() {
 const app = express();
 app.use(cors());
 app.use(express.json());
-await databaseConnect()
+databaseConnect()
 
 app.use('/',router)
 
