@@ -14,7 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserServices = void 0;
 const Error_1 = __importDefault(require("../error/Error"));
+require('dotenv').config();
 const UserModel_1 = __importDefault(require("../models/UserModel"));
+const crypto_js_1 = __importDefault(require("crypto-js"));
 class UserServices {
     getUsers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -29,9 +31,9 @@ class UserServices {
     }
     createUser(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { age, name } = data;
+            const { password, name } = data;
             try {
-                return yield UserModel_1.default.create({ name, age });
+                return yield UserModel_1.default.create({ name, password: crypto_js_1.default.HmacSHA256(password, "YARDAGES") });
             }
             catch (e) {
                 console.log('Error in creating user');

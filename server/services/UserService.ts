@@ -1,7 +1,8 @@
 import CustomError from "../error/Error";
+require('dotenv').config()
 import UserModel from "../models/UserModel";
 import {IUser} from "../utils/types/types";
-
+import CryptoJS from 'crypto-js'
 export class UserServices{
     public async getUsers() {
         try {
@@ -12,9 +13,9 @@ export class UserServices{
         }
     }
     public async createUser(data:IUser){
-        const { age, name } = data
+        const { password, name } = data
         try {
-            return await UserModel.create({ name, age });
+            return await UserModel.create({ name, password: CryptoJS.HmacSHA256(password, "YARDAGES") });
         }catch (e) {
             console.log('Error in creating user');
             throw new CustomError('Error In User Creation ', 504);

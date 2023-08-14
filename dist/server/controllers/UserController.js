@@ -22,8 +22,8 @@ class UserController {
     createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { name, age } = req.body;
-                const data = yield this.userService.createUser({ name, age });
+                const { name, password } = req.body;
+                const data = yield this.userService.createUser({ name, password });
                 res.status(201).json({ data, message: "User Created" });
             }
             catch (e) {
@@ -53,7 +53,7 @@ class UserController {
             try {
                 const id = req.params.id;
                 yield this.userService.deleteUser(id);
-                res.status(201).json({ message: "User Created" });
+                res.status(201).json({ message: "User Deleted" });
             }
             catch (e) {
                 if (e instanceof Error_1.default) {
