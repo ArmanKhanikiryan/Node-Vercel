@@ -12,7 +12,7 @@ export class UserController implements IUserController{
         try{
             const { name, password } = req.body;
             const data = await this.userService.register({ name, password })
-            res.status(201).json({ data, message: "User Created" });
+            res.status(200).json({ data, message: "User Created" });
         }catch (e) {
             if (e instanceof CustomError) {
                 res.status(e.code).json({ errorMessage: e.message });
@@ -27,7 +27,7 @@ export class UserController implements IUserController{
         const userData = JSON.parse(res.getHeader('X-User') as string);
         try {
             const result = await this.userService.getUsers()
-            res.json(result)
+            res.status(200).json(result)
         }catch (e) {
             if (e instanceof CustomError){
                 res.status(e.code).json({ errorMessage: e.message})
@@ -40,7 +40,7 @@ export class UserController implements IUserController{
         try {
             const id = req.params.id;
             await this.userService.deleteUser(id)
-            res.status(201).json({ message: "User Deleted" });
+            res.status(200).json({ message: "User Deleted" });
         }catch (e) {
             if (e instanceof CustomError){
                 res.status(e.code).json({ errorMessage: e.message})
@@ -53,7 +53,7 @@ export class UserController implements IUserController{
         try {
             const {name, password} = req.body
             const data = await this.userService.login({name, password})
-            res.status(201).json({data, message: "Logged In"});
+            res.status(200).json({data, message: "Logged In"});
         }catch (e) {
             if (e instanceof CustomError){
                 res.status(e.code).json({ errorMessage: e.message})

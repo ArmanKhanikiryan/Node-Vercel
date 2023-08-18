@@ -24,7 +24,7 @@ class UserController {
             try {
                 const { name, password } = req.body;
                 const data = yield this.userService.register({ name, password });
-                res.status(201).json({ data, message: "User Created" });
+                res.status(200).json({ data, message: "User Created" });
             }
             catch (e) {
                 if (e instanceof Error_1.default) {
@@ -41,7 +41,7 @@ class UserController {
             const userData = JSON.parse(res.getHeader('X-User'));
             try {
                 const result = yield this.userService.getUsers();
-                res.json(result);
+                res.status(200).json(result);
             }
             catch (e) {
                 if (e instanceof Error_1.default) {
@@ -56,7 +56,7 @@ class UserController {
             try {
                 const id = req.params.id;
                 yield this.userService.deleteUser(id);
-                res.status(201).json({ message: "User Deleted" });
+                res.status(200).json({ message: "User Deleted" });
             }
             catch (e) {
                 if (e instanceof Error_1.default) {
@@ -71,7 +71,7 @@ class UserController {
             try {
                 const { name, password } = req.body;
                 const data = yield this.userService.login({ name, password });
-                res.status(201).json({ data, message: "Logged In" });
+                res.status(200).json({ data, message: "Logged In" });
             }
             catch (e) {
                 if (e instanceof Error_1.default) {
