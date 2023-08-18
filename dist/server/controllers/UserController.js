@@ -19,23 +19,26 @@ class UserController {
     constructor() {
         this.userService = new UserService_1.UserServices();
     }
-    createUser(req, res) {
+    register(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { name, password } = req.body;
-                const data = yield this.userService.createUser({ name, password });
+                const data = yield this.userService.register({ name, password });
                 res.status(201).json({ data, message: "User Created" });
             }
             catch (e) {
                 if (e instanceof Error_1.default) {
                     res.status(e.code).json({ errorMessage: e.message });
                 }
-                res.status(500).json({ errorMessage: 'Internal Server Error' });
+                else {
+                    throw e;
+                }
             }
         });
     }
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const userData = JSON.parse(res.getHeader('X-User'));
             try {
                 const result = yield this.userService.getUsers();
                 res.json(result);
@@ -54,6 +57,21 @@ class UserController {
                 const id = req.params.id;
                 yield this.userService.deleteUser(id);
                 res.status(201).json({ message: "User Deleted" });
+            }
+            catch (e) {
+                if (e instanceof Error_1.default) {
+                    res.status(e.code).json({ errorMessage: e.message });
+                }
+                res.status(500).json({ errorMessage: 'Internal Server Error' });
+            }
+        });
+    }
+    login(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name, password } = req.body;
+                const data = yield this.userService.login({ name, password });
+                res.status(201).json({ data, message: "Logged In" });
             }
             catch (e) {
                 if (e instanceof Error_1.default) {

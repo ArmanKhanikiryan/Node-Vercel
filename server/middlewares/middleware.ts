@@ -1,14 +1,24 @@
 import { NextFunction, Request, Response } from "express";
-import { IMiddleware, IRequestUser } from "../utils/types";
-
+import { IMiddleware, IUser} from "../utils/types/types";
+import jwt from "jsonwebtoken";
 
 export default class Middleware implements IMiddleware{
-    public apiMiddleware(req: Request, res: Response, next: NextFunction): void {
-        const key = req.headers["api-key"];
-        if (key === "qwerty123") {
-            next();
-        } else {
-            res.status(401).json({ errorMessage: "Unauthorized User" });
+    public tokenMiddleware(req: Request, res: Response, next: NextFunction): void {
+        const token = req.headers.token as string
+        if (!token) {
+            res.status(401).json({ errorMessage: "Not Authorized" });
+        }else{
+            const key= process.env.JWT_SECRET &&  process.env.JWT_SECRET
+            if(key){
+                jwt.verify(token, key.toString(), (error, decoded) => {
+                    if (error){
+                        res.status(403).json({ errorMessage: "Access Token is not valid" });
+                    }else {
+                        res.setHeader('X-User', JSON.stringify(decoded));
+                        next()
+                    }
+                })
+            }
         }
     }
 
@@ -17,11 +27,11 @@ export default class Middleware implements IMiddleware{
             next()
             return;
         }
-        const { name, age, gender }: IRequestUser = req.body;
-        if (validations({ name, age, gender })) {
+        const { name, password }: IUser = req.body;
+        if (name && password) {
             next();
         } else {
-            res.status(400).json({ errorMessage: "Invalid User Info" });
+            res.status(400).json({ errorMessage: "Invalid Credentials" });
         }
     }
 }

@@ -8,20 +8,23 @@ export class UserController implements IUserController{
     constructor() {
         this.userService = new UserServices()
     }
-    public async createUser(req: Request, res: Response): Promise<void> {
+    public async register(req: Request, res: Response): Promise<void> {
         try{
             const { name, password } = req.body;
-            const data = await this.userService.createUser({ name, password })
+            const data = await this.userService.register({ name, password })
             res.status(201).json({ data, message: "User Created" });
         }catch (e) {
-            if (e instanceof CustomError){
-                res.status(e.code).json({ errorMessage: e.message})
+            if (e instanceof CustomError) {
+                res.status(e.code).json({ errorMessage: e.message });
+            } else {
+
+                throw e;
             }
-            res.status(500).json({ errorMessage: 'Internal Server Error' });
         }
     }
 
     public async getUsers(req: Request, res: Response):Promise<void> {
+        const userData = JSON.parse(res.getHeader('X-User') as string);
         try {
             const result = await this.userService.getUsers()
             res.json(result)
@@ -46,11 +49,11 @@ export class UserController implements IUserController{
         }
     }
 
-    public async register(req: Request, res: Response): Promise<void> {
-        try{
-            const { name, password } = req.body;
-            const data = await this.userService.createUser({ name, password })
-            res.status(201).json({ data, message: "User Created" });
+    public async login(req: Request, res: Response): Promise<void> {
+        try {
+            const {name, password} = req.body
+            const data = await this.userService.login({name, password})
+            res.status(201).json({data, message: "Logged In"});
         }catch (e) {
             if (e instanceof CustomError){
                 res.status(e.code).json({ errorMessage: e.message})
@@ -58,5 +61,4 @@ export class UserController implements IUserController{
             res.status(500).json({ errorMessage: 'Internal Server Error' });
         }
     }
-
 }

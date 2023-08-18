@@ -1,11 +1,12 @@
 import CustomError from "../error/Error";
 require('dotenv').config()
 import UserModel from "../models/UserModel";
-import {IUser, IUserServices} from "../utils/types/types";
+import {IUser, IUserDocument, IUserServices} from "../utils/types/types";
 import CryptoJS from 'crypto-js'
 import {Document} from "mongoose";
-export class UserServices implements IUserServices{
-    public async getUsers():Promise<Document> {
+import jwt from 'jsonwebtoken'
+export class UserServices{
+    public async getUsers():Promise<Document[]> {
         try {
             return await UserModel.find();
         }catch (e) {
@@ -13,8 +14,12 @@ export class UserServices implements IUserServices{
             throw new CustomError('Error Getting Users', 503);
         }
     }
-    public async createUser(data:IUser){
+    public async register(data:IUser): Promise<Document>{
         const { password, name } = data
+        const existing = await UserModel.find({name})
+        if (existing.length){
+            throw new CustomError('User Already Existing ', 400);
+        }
         try {
             if (!process.env.PASSWORD_SECRET){
                 console.log('Invalid .env credentials')
@@ -24,6 +29,35 @@ export class UserServices implements IUserServices{
         }catch (e) {
             console.log('Error in creating user');
             throw new CustomError('Error In User Creation ', 504);
+        }
+    }
+    public async login(data: IUser): Promise<IUserDocument> {
+        const { password, name } = data;
+        if (!process.env.PASSWORD_SECRET || !process.env.JWT_SECRET) {
+            console.log('Invalid .env credentials');
+            process.exit(1);
+        }
+        const user = await UserModel.findOne({ name });
+        if (!user) {
+            throw new CustomError('Wrong Credentials', 404);
+        }
+        try {
+            const parsed = CryptoJS.AES.decrypt(
+                user.password,
+                process.env.PASSWORD_SECRET.toString()
+            ).toString(CryptoJS.enc.Utf8);
+            if (parsed !== password) {
+                throw new CustomError('Error In User Login', 504);
+            }
+            const accessToken = jwt.sign({
+                id: user._id
+            }, process.env.JWT_SECRET.toString(), { expiresIn: '1d' });
+            return {
+                ...user.toObject(),
+                accessToken
+            } as IUserDocument;
+        } catch (e) {
+            throw new CustomError('Error In User Login', 504);
         }
     }
     public async deleteUser(_id: string): Promise<void> {
