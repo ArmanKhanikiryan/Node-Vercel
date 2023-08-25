@@ -12,5 +12,6 @@ const { validationMiddleware, tokenMiddleware } = new middleware_1.default();
 router.post('/register', validationMiddleware, userController.register.bind(userController));
 router.post('/login', validationMiddleware, userController.login.bind(userController));
 router.get('/', tokenMiddleware, userController.getUsers.bind(userController));
+router.get('/get-without', userController.getUsers.bind(userController));
 router.delete('/delete/:id', userController.deleteUser.bind(userController));
 exports.default = router;
