@@ -38,7 +38,7 @@ class UserController {
     }
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const userData = JSON.parse(res.getHeader('X-User'));
+            // const userData = JSON.parse(res.getHeader('X-User') as string);
             try {
                 const result = yield this.userService.getUsers();
                 res.status(200).json(result);

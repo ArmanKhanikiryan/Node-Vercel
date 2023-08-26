@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import CustomError from "../error/Error";
 import {UserServices} from "../services/UserService";
 import {IUserController} from "../utils/types/types";
+import {Document} from "mongoose";
 
 export class UserController implements IUserController{
     private userService: UserServices
@@ -17,16 +18,15 @@ export class UserController implements IUserController{
             if (e instanceof CustomError) {
                 res.status(e.code).json({ errorMessage: e.message });
             } else {
-
                 throw e;
             }
         }
     }
 
     public async getUsers(req: Request, res: Response):Promise<void> {
-        const userData = JSON.parse(res.getHeader('X-User') as string);
+        // const userData = JSON.parse(res.getHeader('X-User') as string);
         try {
-            const result = await this.userService.getUsers()
+            const result:Document[] = await this.userService.getUsers()
             res.status(200).json(result)
         }catch (e) {
             if (e instanceof CustomError){
