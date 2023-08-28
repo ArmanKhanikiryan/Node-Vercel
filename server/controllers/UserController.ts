@@ -37,7 +37,6 @@ export class UserController implements IUserController{
         }
     }
     public async authUser(req: Request, res: Response):Promise<void> {
-        console.log("token validate")
         const userData = JSON.parse(res.getHeader('X-User') as string);
         try {
             const result:Document | null= await this.userService.authUser(userData.id)
@@ -45,7 +44,6 @@ export class UserController implements IUserController{
                 res.status(404).json({ errorMessage: 'User Not Found' });
                 return;
             }
-            console.log(result, "EACH");
             res.status(200).json(result)
         }catch (e) {
             if (e instanceof CustomError){
@@ -76,6 +74,7 @@ export class UserController implements IUserController{
         }catch (e) {
             if (e instanceof CustomError){
                 res.status(e.code).json({ errorMessage: e.message})
+                return
             }
             res.status(500).json({ errorMessage: 'Internal Server Error' });
         }

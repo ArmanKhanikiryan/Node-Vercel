@@ -41,8 +41,7 @@ class UserServices {
                 if (!user) {
                     return user;
                 }
-                const newAccessToken = jsonwebtoken_1.default.sign({ _id }, process.env.JWT_SECRET.toString(), { expiresIn: '3d' });
-                return Object.assign(Object.assign({}, user.toObject()), { accessToken: newAccessToken });
+                return user;
             }
             catch (e) {
                 console.log('Error in getting users');

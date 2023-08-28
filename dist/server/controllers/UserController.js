@@ -60,7 +60,6 @@ class UserController {
                     res.status(404).json({ errorMessage: 'User Not Found' });
                     return;
                 }
-                console.log(result, "EACH");
                 res.status(200).json(result);
             }
             catch (e) {
@@ -96,6 +95,7 @@ class UserController {
             catch (e) {
                 if (e instanceof Error_1.default) {
                     res.status(e.code).json({ errorMessage: e.message });
+                    return;
                 }
                 res.status(500).json({ errorMessage: 'Internal Server Error' });
             }

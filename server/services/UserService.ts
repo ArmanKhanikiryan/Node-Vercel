@@ -24,11 +24,7 @@ export class UserServices{
             if (!user){
                 return user
             }
-            const newAccessToken = jwt.sign({ _id }, process.env.JWT_SECRET.toString(), { expiresIn: '3d' });
-            return {
-                ...user.toObject(),
-                accessToken: newAccessToken
-            } as IUserDocument;
+            return user
         }catch (e) {
             console.log('Error in getting users');
             throw new CustomError('Error Getting Users', 503);
