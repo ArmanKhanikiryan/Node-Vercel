@@ -38,9 +38,29 @@ class UserController {
     }
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            // const userData = JSON.parse(res.getHeader('X-User') as string);
             try {
                 const result = yield this.userService.getUsers();
+                res.status(200).json(result);
+            }
+            catch (e) {
+                if (e instanceof Error_1.default) {
+                    res.status(e.code).json({ errorMessage: e.message });
+                }
+                res.status(500).json({ errorMessage: 'Internal Server Error' });
+            }
+        });
+    }
+    authUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("token validate");
+            const userData = JSON.parse(res.getHeader('X-User'));
+            try {
+                const result = yield this.userService.authUser(userData.id);
+                if (!result) {
+                    res.status(404).json({ errorMessage: 'User Not Found' });
+                    return;
+                }
+                console.log(result, "EACH");
                 res.status(200).json(result);
             }
             catch (e) {

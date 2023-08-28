@@ -10,9 +10,11 @@ export class UserController implements IUserController{
         this.userService = new UserServices()
     }
     public async register(req: Request, res: Response): Promise<void> {
+
         try{
             const { name, password } = req.body;
             const data = await this.userService.register({ name, password })
+
             res.status(200).json({ data, message: "User Created" });
         }catch (e) {
             if (e instanceof CustomError) {
@@ -24,9 +26,26 @@ export class UserController implements IUserController{
     }
 
     public async getUsers(req: Request, res: Response):Promise<void> {
-        // const userData = JSON.parse(res.getHeader('X-User') as string);
         try {
             const result:Document[] = await this.userService.getUsers()
+            res.status(200).json(result)
+        }catch (e) {
+            if (e instanceof CustomError){
+                res.status(e.code).json({ errorMessage: e.message})
+            }
+            res.status(500).json({ errorMessage: 'Internal Server Error' });
+        }
+    }
+    public async authUser(req: Request, res: Response):Promise<void> {
+        console.log("token validate")
+        const userData = JSON.parse(res.getHeader('X-User') as string);
+        try {
+            const result:Document | null= await this.userService.authUser(userData.id)
+            if (!result){
+                res.status(404).json({ errorMessage: 'User Not Found' });
+                return;
+            }
+            console.log(result, "EACH");
             res.status(200).json(result)
         }catch (e) {
             if (e instanceof CustomError){

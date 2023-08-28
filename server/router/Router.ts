@@ -13,6 +13,8 @@ router.post('/login', validationMiddleware, userController.login.bind(userContro
 
 router.get('/', tokenMiddleware, userController.getUsers.bind(userController));
 
+router.get('/auth', tokenMiddleware, userController.authUser.bind(userController));
+
 router.get('/get-without',  userController.getUsers.bind(userController));
 
 router.delete('/delete/:id', userController.deleteUser.bind(userController));

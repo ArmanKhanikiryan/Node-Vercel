@@ -14,6 +14,27 @@ export class UserServices{
             throw new CustomError('Error Getting Users', 503);
         }
     }
+    public async authUser(_id: string):Promise<Document | null> {
+        try {
+            if (!process.env.JWT_SECRET){
+                console.log('Invalid .env credentials')
+                process.exit(1)
+            }
+            const user = await UserModel.findById(_id)
+            if (!user){
+                return user
+            }
+            const newAccessToken = jwt.sign({ _id }, process.env.JWT_SECRET.toString(), { expiresIn: '3d' });
+            return {
+                ...user.toObject(),
+                accessToken: newAccessToken
+            } as IUserDocument;
+        }catch (e) {
+            console.log('Error in getting users');
+            throw new CustomError('Error Getting Users', 503);
+        }
+    }
+
     public async register(data:IUser): Promise<Document>{
         const { password, name } = data
         const existing = await UserModel.find({name})
@@ -51,7 +72,7 @@ export class UserServices{
             }
             const accessToken = jwt.sign({
                 id: user._id
-            }, process.env.JWT_SECRET.toString(), { expiresIn: '1d' });
+            }, process.env.JWT_SECRET.toString(), { expiresIn: '3d' });
             return {
                 ...user.toObject(),
                 accessToken

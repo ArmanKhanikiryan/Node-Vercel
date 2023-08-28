@@ -30,6 +30,26 @@ class UserServices {
             }
         });
     }
+    authUser(_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!process.env.JWT_SECRET) {
+                    console.log('Invalid .env credentials');
+                    process.exit(1);
+                }
+                const user = yield UserModel_1.default.findById(_id);
+                if (!user) {
+                    return user;
+                }
+                const newAccessToken = jsonwebtoken_1.default.sign({ _id }, process.env.JWT_SECRET.toString(), { expiresIn: '3d' });
+                return Object.assign(Object.assign({}, user.toObject()), { accessToken: newAccessToken });
+            }
+            catch (e) {
+                console.log('Error in getting users');
+                throw new Error_1.default('Error Getting Users', 503);
+            }
+        });
+    }
     register(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const { password, name } = data;
@@ -68,7 +88,7 @@ class UserServices {
                 }
                 const accessToken = jsonwebtoken_1.default.sign({
                     id: user._id
-                }, process.env.JWT_SECRET.toString(), { expiresIn: '1d' });
+                }, process.env.JWT_SECRET.toString(), { expiresIn: '3d' });
                 return Object.assign(Object.assign({}, user.toObject()), { accessToken });
             }
             catch (e) {
