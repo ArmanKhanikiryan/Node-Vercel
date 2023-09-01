@@ -18,8 +18,6 @@ const http_1 = __importDefault(require("http"));
 const socket_io_1 = __importDefault(require("socket.io"));
 const database_1 = __importDefault(require("./database/database"));
 const Router_1 = __importDefault(require("./router/Router"));
-const UserModel_1 = __importDefault(require("./models/UserModel"));
-const MessageModle_1 = __importDefault(require("./models/MessageModle"));
 require('dotenv').config();
 function server() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -30,28 +28,30 @@ function server() {
         app.use('/', Router_1.default);
         const server = http_1.default.createServer(app);
         const io = new socket_io_1.default.Server(server, { cors: { origin: "*" } });
-        io.on('connection', (socket) => {
-            socket.on('chat_message', ({ senderId, receiverId, content }) => __awaiter(this, void 0, void 0, function* () {
-                try {
-                    const sender = yield UserModel_1.default.findById(senderId);
-                    const receiver = yield UserModel_1.default.findById(receiverId);
-                    if (!sender || !receiver) {
-                        console.error('Sender or receiver not found');
-                        return;
-                    }
-                    const newMessage = new MessageModle_1.default({ sender, receiver, content });
-                    yield newMessage.save();
-                    socket.emit('new_message', newMessage);
-                    socket.to(receiverId).emit('new_message', newMessage);
-                }
-                catch (error) {
-                    console.error('Error saving message:', error);
-                }
-            }));
-            socket.on('disconnect', () => {
-                console.log('A user disconnected');
-            });
-        });
+        // io.on('connection', (socket) => {
+        //     console.log('User connected');
+        //     socket.on('chat_message', async ({ senderId, receiverId, content }) => {
+        //         try {
+        //             const sender = await UserModel.findById(senderId);
+        //             const receiver = await UserModel.findById(receiverId);
+        //             if (!sender || !receiver) {
+        //                 console.error('Sender or receiver not found');
+        //                 return;
+        //             }
+        //             const newMessage = new Message({ sender, receiver, content });
+        //             await newMessage.save();
+        //             console.log(newMessage.content, 'NEW')
+        //             socket.emit('new_message', newMessage);
+        //             socket.to(receiverId).emit('new_message', newMessage);
+        //         } catch (error) {
+        //             console.error('Error saving message:', error);
+        //         }
+        //     });
+        //     socket.on('disconnect', () => {
+        //         console.log('User disconnected');
+        //     });
+        //
+        // });
         const PORT = process.env.PORT || 1234;
         server.listen(PORT, () => {
             console.log(`Server is up and working on port ${PORT}`);

@@ -1,5 +1,15 @@
 {
   "version": 2,
+  "env": {
+    "PORT": "9999",
+    "DBURL":"mongodb+srv://armankhanikiryan:93285797a@node-vercel-cluster.cpc5cyl.mongodb.net/",
+    "PASSWORD_SECRET":"YARDAGES",
+    "JWT_SECRET":"YARDAGESJWT",
+    "PUSHER_APP_ID": "1663067",
+    "PUSHER_KEY":"9e191eae6fe03cb16359",
+    "PUSHER_SECRET": "48ada4f10c2e88a2aa7b",
+    "PUSHER_CLUSTER":"ap2"
+  },
   "builds": [
     {
       "src": "./index.js",
