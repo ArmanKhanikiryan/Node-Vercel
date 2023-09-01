@@ -15,37 +15,8 @@ async function server() {
     app.use(cors());
     app.use(express.json());
     databaseConnect();
-
     app.use('/', router);
-
     const server = http.createServer(app);
-    const io = new socketIo.Server(server, {cors: {origin: "*"}});
-
-    // io.on('connection', (socket) => {
-    //     console.log('User connected');
-    //     socket.on('chat_message', async ({ senderId, receiverId, content }) => {
-    //         try {
-    //             const sender = await UserModel.findById(senderId);
-    //             const receiver = await UserModel.findById(receiverId);
-    //             if (!sender || !receiver) {
-    //                 console.error('Sender or receiver not found');
-    //                 return;
-    //             }
-    //             const newMessage = new Message({ sender, receiver, content });
-    //             await newMessage.save();
-    //             console.log(newMessage.content, 'NEW')
-    //             socket.emit('new_message', newMessage);
-    //             socket.to(receiverId).emit('new_message', newMessage);
-    //         } catch (error) {
-    //             console.error('Error saving message:', error);
-    //         }
-    //     });
-    //     socket.on('disconnect', () => {
-    //         console.log('User disconnected');
-    //     });
-    //
-    // });
-
     const PORT = process.env.PORT || 1234;
     server.listen(PORT, () => {
         console.log(`Server is up and working on port ${PORT}`);

@@ -34,19 +34,46 @@ router.get('/chat-user/:id', userController.getUserById.bind(userController))
 
 
 
+// router.post('/send-message', async (req, res) => {
+//     const { senderId, receiverId, content } = req.body;
+//     try {
+//         const newMessage = new Message({ sender: senderId, receiver: receiverId, content });
+//         await newMessage.save();
+//         await pusher.trigger('chat', 'new_message', newMessage);
+//         res.status(200).json(newMessage);
+//     } catch (error) {
+//         console.error('Error saving message:');
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
+router.get('/message-history/:senderId/:receiverId', async (req, res) => {
+    const { senderId, receiverId } = req.params;
+    try {
+        const history = await Message.find({
+            $or: [
+                { sender: senderId, receiver: receiverId },
+                { sender: receiverId, receiver: senderId },
+            ],
+        }).sort('createdAt');
+        res.status(200).json(history);
+    } catch (error) {
+        console.error('Error fetching message history:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 router.post('/send-message', async (req, res) => {
     const { senderId, receiverId, content } = req.body;
     try {
         const newMessage = new Message({ sender: senderId, receiver: receiverId, content });
         await newMessage.save();
-        await pusher.trigger('chat', 'new_message', newMessage);
+        await pusher.trigger(`chat-${senderId}-${receiverId}`, 'new_message', newMessage);
         res.status(200).json(newMessage);
     } catch (error) {
-        console.error('Error saving message:');
+        console.error('Error saving message:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 
 export default router;
