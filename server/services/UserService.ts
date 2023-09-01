@@ -14,20 +14,13 @@ export class UserServices{
             throw new CustomError('Error Getting Users', 503);
         }
     }
-    public async authUser(_id: string):Promise<Document | null> {
+
+    public async getUserById(id:string):Promise<Document | null> {
         try {
-            if (!process.env.JWT_SECRET){
-                console.log('Invalid .env credentials')
-                process.exit(1)
-            }
-            const user = await UserModel.findById(_id)
-            if (!user){
-                return user
-            }
-            return user
+            return await UserModel.findById(id);
         }catch (e) {
-            console.log('Error in getting users');
-            throw new CustomError('Error Getting Users', 503);
+            console.log('Error in getting user by id');
+            throw new CustomError('Error Getting User By Id', 503);
         }
     }
 

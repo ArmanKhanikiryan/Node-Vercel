@@ -25,7 +25,7 @@ export class UserController implements IUserController{
         }
     }
 
-    public async getUsers(req: Request, res: Response):Promise<void> {
+    public async getUsers(_: Request, res: Response):Promise<void> {
         try {
             const result:Document[] = await this.userService.getUsers()
             res.status(200).json(result)
@@ -36,10 +36,10 @@ export class UserController implements IUserController{
             res.status(500).json({ errorMessage: 'Internal Server Error' });
         }
     }
-    public async authUser(req: Request, res: Response):Promise<void> {
+    public async authUser(_: Request, res: Response):Promise<void> {
         const userData = JSON.parse(res.getHeader('X-User') as string);
         try {
-            const result:Document | null= await this.userService.authUser(userData.id)
+            const result:Document | null= await this.userService.getUserById(userData.id)
             if (!result){
                 res.status(404).json({ errorMessage: 'User Not Found' });
                 return;
@@ -66,6 +66,19 @@ export class UserController implements IUserController{
         }
     }
 
+    public async getUserById(req: Request, res: Response):Promise<void>{
+        try {
+            const id: string = req.params.id;
+            const user = await this.userService.getUserById(id)
+            if (!user){
+                res.status(404).json({ errorMessage: 'User Not Found' });
+                return;
+            }
+            res.status(200).json(user)
+        }catch(err){
+
+        }
+    }
     public async login(req: Request, res: Response): Promise<void> {
         try {
             const {name, password} = req.body

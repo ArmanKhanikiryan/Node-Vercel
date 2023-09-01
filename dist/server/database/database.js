@@ -12,7 +12,7 @@ function databaseConnect() {
         process.exit(1);
     }
     mongoose_1.default.connect(dbUrl)
-        .then(() => console.log('Successfully connected to MongoDB'))
+        .then(() => console.log('Successfully connected to MongoDB:'))
         .catch(e => console.log(e));
 }
 exports.default = databaseConnect;

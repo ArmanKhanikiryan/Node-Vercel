@@ -30,22 +30,14 @@ class UserServices {
             }
         });
     }
-    authUser(_id) {
+    getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                if (!process.env.JWT_SECRET) {
-                    console.log('Invalid .env credentials');
-                    process.exit(1);
-                }
-                const user = yield UserModel_1.default.findById(_id);
-                if (!user) {
-                    return user;
-                }
-                return user;
+                return yield UserModel_1.default.findById(id);
             }
             catch (e) {
-                console.log('Error in getting users');
-                throw new Error_1.default('Error Getting Users', 503);
+                console.log('Error in getting user by id');
+                throw new Error_1.default('Error Getting User By Id', 503);
             }
         });
     }

@@ -36,7 +36,7 @@ class UserController {
             }
         });
     }
-    getUsers(req, res) {
+    getUsers(_, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield this.userService.getUsers();
@@ -50,12 +50,11 @@ class UserController {
             }
         });
     }
-    authUser(req, res) {
+    authUser(_, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("token validate");
             const userData = JSON.parse(res.getHeader('X-User'));
             try {
-                const result = yield this.userService.authUser(userData.id);
+                const result = yield this.userService.getUserById(userData.id);
                 if (!result) {
                     res.status(404).json({ errorMessage: 'User Not Found' });
                     return;
@@ -82,6 +81,21 @@ class UserController {
                     res.status(e.code).json({ errorMessage: e.message });
                 }
                 res.status(500).json({ errorMessage: 'Internal Server Error' });
+            }
+        });
+    }
+    getUserById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = req.params.id;
+                const user = yield this.userService.getUserById(id);
+                if (!user) {
+                    res.status(404).json({ errorMessage: 'User Not Found' });
+                    return;
+                }
+                res.status(200).json(user);
+            }
+            catch (err) {
             }
         });
     }

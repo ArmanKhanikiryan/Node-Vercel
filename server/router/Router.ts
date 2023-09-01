@@ -17,7 +17,9 @@ router.get('/auth', tokenMiddleware, userController.authUser.bind(userController
 
 router.get('/get-without',  userController.getUsers.bind(userController));
 
-router.delete('/delete/:id', userController.deleteUser.bind(userController));
+router.delete('/delete/:id', tokenMiddleware, userController.deleteUser.bind(userController));
+
+router.get('/chat-user/:id', userController.getUserById.bind(userController))
 
 
 export default router;
