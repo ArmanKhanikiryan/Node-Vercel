@@ -19,10 +19,12 @@ const UserModel_1 = __importDefault(require("../models/UserModel"));
 const crypto_js_1 = __importDefault(require("crypto-js"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class UserServices {
-    getUsers() {
+    getUsers(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield UserModel_1.default.find();
+                return yield UserModel_1.default.find({
+                    _id: { $ne: id },
+                });
             }
             catch (e) {
                 console.log('Error in getting users');
