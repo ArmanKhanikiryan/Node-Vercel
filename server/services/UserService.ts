@@ -6,9 +6,11 @@ import CryptoJS from 'crypto-js'
 import {Document} from "mongoose";
 import jwt from 'jsonwebtoken'
 export class UserServices{
-    public async getUsers():Promise<Document[]> {
+    public async getUsers(id:string):Promise<Document[]> {
         try {
-            return await UserModel.find();
+            return await UserModel.find({
+                _id: { $ne: id },
+            });
         }catch (e) {
             console.log('Error in getting users');
             throw new CustomError('Error Getting Users', 503);

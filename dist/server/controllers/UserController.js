@@ -36,10 +36,11 @@ class UserController {
             }
         });
     }
-    getUsers(_, res) {
+    getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.userService.getUsers();
+                const { id } = req.params;
+                const result = yield this.userService.getUsers(id);
                 res.status(200).json(result);
             }
             catch (e) {

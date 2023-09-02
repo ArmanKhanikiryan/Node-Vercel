@@ -41,7 +41,6 @@ async function server() {
         socket.on('disconnect', () => {
             console.log('A user disconnected');
         });
-
     });
 
     const PORT = process.env.PORT || 1234;
