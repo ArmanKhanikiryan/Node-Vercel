@@ -25,13 +25,15 @@ export class UserController implements IUserController{
         }
     }
 
-    public async getUsers(_: Request, res: Response):Promise<void> {
+    public async getUsers(req: Request, res: Response):Promise<void> {
         try {
-            const result:Document[] = await this.userService.getUsers()
+            const { id } = req.params
+            const result:Document[] = await this.userService.getUsers(id)
             res.status(200).json(result)
         }catch (e) {
             if (e instanceof CustomError){
                 res.status(e.code).json({ errorMessage: e.message})
+                return;
             }
             res.status(500).json({ errorMessage: 'Internal Server Error' });
         }
