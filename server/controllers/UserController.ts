@@ -33,6 +33,7 @@ export class UserController implements IUserController{
         }catch (e) {
             if (e instanceof CustomError){
                 res.status(e.code).json({ errorMessage: e.message})
+                return;
             }
             res.status(500).json({ errorMessage: 'Internal Server Error' });
         }

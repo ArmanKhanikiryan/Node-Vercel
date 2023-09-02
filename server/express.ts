@@ -5,8 +5,8 @@ import socketIo from 'socket.io';
 
 import databaseConnect from './database/database';
 import router from './router/Router';
-import UserModel from "./models/UserModel";
-import Message from "./models/MessageModle";
+import UserModel from './models/UserModel';
+import Message from './models/MessageModle';
 
 require('dotenv').config();
 
@@ -19,9 +19,13 @@ async function server() {
     app.use('/', router);
 
     const server = http.createServer(app);
-    const io = new socketIo.Server(server, {cors: {origin: "*"}});
+    const io = new socketIo.Server(server, { cors: { origin: '*' } });
 
     io.on('connection', (socket) => {
+        console.log('User connected');
+        socket.on('join_room', (userId) => {
+            socket.join(userId);
+        });
         socket.on('chat_message', async ({ senderId, receiverId, content }) => {
             try {
                 const sender = await UserModel.findById(senderId);
@@ -32,12 +36,13 @@ async function server() {
                 }
                 const newMessage = new Message({ sender, receiver, content });
                 await newMessage.save();
-                socket.emit('new_message', newMessage);
-                socket.to(receiverId).emit('new_message', newMessage);
+                io.to(senderId).emit('new_message', newMessage);
+                io.to(receiverId).emit('new_message', newMessage);
             } catch (error) {
                 console.error('Error saving message:', error);
             }
         });
+
         socket.on('disconnect', () => {
             console.log('A user disconnected');
         });
@@ -49,4 +54,5 @@ async function server() {
     });
 }
 
-export default server;
+// server();
+export default server

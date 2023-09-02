@@ -46,6 +46,7 @@ class UserController {
             catch (e) {
                 if (e instanceof Error_1.default) {
                     res.status(e.code).json({ errorMessage: e.message });
+                    return;
                 }
                 res.status(500).json({ errorMessage: 'Internal Server Error' });
             }
